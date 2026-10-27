@@ -40,8 +40,8 @@ class Controller:
         desired_gap = 20
         self.mode = Mode.CRUISING if dist_to_lead > 40 else Mode.FOLLOWING
         
-        if not self.prev_dist_to_lead:
-            self.prev_dist_to_lead = dist_to_lead
+        # if not self.prev_dist_to_lead:
+        #     self.prev_dist_to_lead = dist_to_lead
             
         # if dist_to_lead != float('inf') and self.prev_dist_to_lead != float('inf'):
         #         delta = dist_to_lead = self.prev_dist_to_lead
