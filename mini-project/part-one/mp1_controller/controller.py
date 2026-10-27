@@ -53,4 +53,20 @@ class Controller:  # class name is required by the autograder
         error, gain = desired_speed - ego_velocity, 10
         accel = min(10, max(-10, gain * error))
 
+        # ---- [Yicheng] 4. safe-gap limit and braking (safeFollowing, dontStopUnlessLeadStops) ----
+        full_brake_decel = 5.0  # m/s^2
+        delay = 0.4  # s
+        min_safe_gap = 9.0  # m
+        brake_force = 5.0  # how heavy the brake is
+
+        if lead_in_lane:
+            room = max(0.0, dist_to_lead-min_safe_gap)
+            safe_speed = full_brake_decel*(-delay+np.sqrt(delay**2+2*room/full_brake_decel))
+            a_follow = brake_force*(safe_speed-ego_velocity)
+        else:
+            a_follow = 10.0
+
+        accel = min(accel, a_follow)
+        accel = min(10, max(-10, accel))
+
         return (accel, Mode.CRUISING)
