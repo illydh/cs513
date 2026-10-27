@@ -34,5 +34,8 @@ class Controller:
         dist_to_lead = obs.distance_to_lead
 
         # Do your magic...
+        error, gain = desired_speed - ego_velocity, 10
+        accel = min(10, max(-10, gain * error))
+        
 
-        return (10.0, Mode.FOLLOWING)
+        return (accel, Mode.CRUISING)
