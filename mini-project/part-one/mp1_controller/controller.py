@@ -51,8 +51,10 @@ class Controller:
         #             if time_left < 
         
         # error = 
-        cruise_accel = (desired_speed - ego_velocity) * cruise_gain
-        follow_accel = (dist_to_lead - desired_gap) * follow_gain
-        accel = min(10, max(-10, min(cruise_accel, follow_accel)))
+        
+        
+        accel = (desired_speed - ego_velocity) * cruise_gain if self.mode == Mode.CRUISING else (dist_to_lead - desired_gap) * follow_gain
+        # follow_accel = 
+        accel = min(10, max(-10, accel))
         
         return (accel, self.mode)
