@@ -36,6 +36,7 @@ class Controller:
         # Do your magic...
         error, gain = desired_speed - ego_velocity, 8
         accel = min(10, max(-10, gain * error))
-        mode = Mode.CRUISING if dist_to_lead > 40 else Mode.FOLLOWING
+        mode = Mode.CRUISING if dist_to_lead > self.distance_threshold else Mode.FOLLOWING
+        if mode == Mode.FOLLOWING: accel = -10
 
         return (accel, mode)
