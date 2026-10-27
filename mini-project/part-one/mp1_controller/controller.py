@@ -12,6 +12,8 @@ from typing import Tuple
 class Controller:
     def __init__(self, distance_threshold: float):
         self.distance_threshold = distance_threshold
+        # self.prev_dist_to_lead = None
+        self.mode = Mode.FOLLOWING
 
     def run_step(self, obs: Observation) -> Tuple[float, Mode]:
         """This is the main run step of the controller.
@@ -34,9 +36,23 @@ class Controller:
         dist_to_lead = obs.distance_to_lead
 
         # Do your magic...
-        error, gain = desired_speed - ego_velocity, 8
-        accel = min(10, max(-10, gain * error))
-        mode = Mode.CRUISING if dist_to_lead > self.distance_threshold else Mode.FOLLOWING
-        if mode == Mode.FOLLOWING: accel = -10
-
-        return (accel, mode)
+        cruise_gain, follow_gain = 10, 0.5
+        desired_gap = 20
+        self.mode = Mode.CRUISING if dist_to_lead > 40 else Mode.FOLLOWING
+        
+        if not self.prev_dist_to_lead:
+            self.prev_dist_to_lead = dist_to_lead
+            
+        # if dist_to_lead != float('inf') and self.prev_dist_to_lead != float('inf'):
+        #         delta = dist_to_lead = self.prev_dist_to_lead
+        #         closing_speed = -delta / 0.1
+        #         if closing_speed > 0:
+        #             time_left = dist_to_lead / closing_speed
+        #             if time_left < 
+        
+        # error = 
+        cruise_accel = (desired_speed - ego_velocity) * cruise_gain
+        follow_accel = (dist_to_lead - desired_gap) * follow_gain
+        accel = min(10, max(-10, min(cruise_accel, follow_accel)))
+        
+        return (accel, self.mode)
