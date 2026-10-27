@@ -37,4 +37,4 @@ class Controller:
         error, gain = desired_speed - ego_velocity, 8
         accel = min(10, max(-10, gain * error))
 
-        return (accel, dist_to_lead <= 40)
+        return (accel, int(dist_to_lead <= 40))
