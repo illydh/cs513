@@ -12,8 +12,6 @@ from typing import Tuple
 class Controller:
     def __init__(self, distance_threshold: float):
         self.distance_threshold = distance_threshold
-        # self.prev_dist_to_lead = None
-        self.mode = Mode.FOLLOWING
 
     def run_step(self, obs: Observation) -> Tuple[float, Mode]:
         """This is the main run step of the controller.
@@ -30,31 +28,16 @@ class Controller:
 
         Below is some example code where the car just outputs the control value 10.0
         """
-
+        import math
         ego_velocity = obs.ego_velocity
         desired_speed = obs.desired_speed
         dist_to_lead = obs.distance_to_lead
 
         # Do your magic...
-        cruise_gain, follow_gain = 10, 0.5
-        desired_gap = 40
-        self.mode = Mode.CRUISING if dist_to_lead > 40 else Mode.FOLLOWING
-        
-        # if not self.prev_dist_to_lead:
-        #     self.prev_dist_to_lead = dist_to_lead
-            
-        # if dist_to_lead != float('inf') and self.prev_dist_to_lead != float('inf'):
-        #         delta = dist_to_lead = self.prev_dist_to_lead
-        #         closing_speed = -delta / 0.1
-        #         if closing_speed > 0:
-        #             time_left = dist_to_lead / closing_speed
-        #             if time_left < 
-        
-        # error = 
-        
-        
-        accel = (desired_speed - ego_velocity) * cruise_gain if self.mode == Mode.CRUISING else (dist_to_lead - desired_gap) * follow_gain
-        # follow_accel = 
-        accel = min(10, max(-10, accel))
-        
-        return (accel, self.mode)
+        mode = Mode.CRUISING if dist_to_lead > 40 else Mode.FOLLOWING
+        a_cruise = 10 * (desired_speed - ego_velocity)
+        room = max(0.0, dist_to_lead-9.0)
+        safe = 5.0 * (-0.4 + math.sqrt(0.4**2 + 2 * room / 5.0))
+        a_follow = 5.0 * (safe - ego_velocity)
+        a = min(a_cruise, a_follow)
+        return (min(10, max(-10, a)), mode)
