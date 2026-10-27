@@ -35,4 +35,4 @@ class Controller:
 
         # Do your magic...
 
-        return (-10.0, Mode.FOLLOWING)
+        return (10.0, Mode.FOLLOWING)
