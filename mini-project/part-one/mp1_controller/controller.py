@@ -37,7 +37,7 @@ class Controller:
 
         # Do your magic...
         cruise_gain, follow_gain = 10, 0.5
-        desired_gap = 20
+        desired_gap = 40
         self.mode = Mode.CRUISING if dist_to_lead > 40 else Mode.FOLLOWING
         
         # if not self.prev_dist_to_lead:
